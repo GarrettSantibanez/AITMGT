@@ -668,7 +668,7 @@ Function Uninstall-LTService{
                             $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
                         } Else {
                             #Original Generic Installer URL - Yes, these both reference Location 1 and are thus the same. Will it change in Patch 14? This section is now ready.
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
+                            $installer = "https://lt.aitmgt.com/LabTech/Deployment.aspx?InstallerToken=fbe4b119eff844a08f44b275707e1cbd"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
