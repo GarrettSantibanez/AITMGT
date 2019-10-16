@@ -1118,8 +1118,8 @@ Function Install-LTService{
                         } Else {
                             If ( $PSCmdlet.ShouldProcess($installer, "DownloadFile") ) {
                                 Write-Debug "Downloading Agent_Install.msi from $installer"
-                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.msi")
-                                If((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi") -and  !((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -EA 0).length/1KB -gt 1234)) {
+                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.exe")
+                                If((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.exe") -and  !((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.exe" -EA 0).length/1KB -gt 1234)) {
                                     Write-Warning "Agent_Install.msi size is below normal. Removing suspected corrupt file."
                                     Remove-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
                                     Continue
