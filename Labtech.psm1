@@ -1157,7 +1157,7 @@ Function Install-LTService{
 
                             If ($WhatIfPreference -eq $True) {
                                 $GoodServer = $Svr
-                            } ElseIf (Test-Path "$env:windir\temp\LabTech\Installer\temp\temp\Agent_Install.msi") {
+                            } ElseIf (Test-Path "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi") {
                                 $GoodServer = $Svr
                                 Write-Verbose "Agent_Install.msi downloaded successfully from server $($Svr)."
                             } Else {
