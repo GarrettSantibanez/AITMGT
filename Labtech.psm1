@@ -712,11 +712,11 @@ Function Uninstall-LTService{
                         Else {
                             If ($PSCmdlet.ShouldProcess("$installer", "DownloadFile")) {
                                 Write-Debug "Line $(LINENUM): Downloading Agent_Install.msi from $installer"
-                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.msi")
-                                If ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi")) {
-                                    If (!((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -EA 0).length -gt 2500kb)) {
+                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\test\Agent_Install.msi")
+                                If ((Test-Path "$env:windir\temp\LabTech\Installer\test\Agent_Install.msi")) {
+                                    If (!((Get-Item "$env:windir\temp\LabTech\Installer\test\Agent_Install.msi" -EA 0).length -gt 2500kb)) {
                                         Write-Warning "WARNING: Line $(LINENUM): Agent_Install.msi size is below normal. Removing suspected corrupt file."
-                                        Remove-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
+                                        Remove-Item "$env:windir\temp\LabTech\Installer\test\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
                                         Continue
                                     } Else {
                                         $AlternateServer = $Svr
@@ -759,7 +759,7 @@ Function Uninstall-LTService{
                         }#End If
                         If ($WhatIfPreference -eq $True) {
                             $GoodServer = $Svr
-                        } ElseIf ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi") -and (Test-Path "$($env:windir)\temp\Agent_Uninstall.exe")) {
+                        } ElseIf ((Test-Path "$env:windir\temp\LabTech\Installer\test\Agent_Install.msi") -and (Test-Path "$($env:windir)\temp\Agent_Uninstall.exe")) {
                             $GoodServer = $Svr
                             Write-Verbose "Successfully downloaded files from $($Svr)."
                         } Else {
