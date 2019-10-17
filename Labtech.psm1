@@ -660,7 +660,7 @@ Function Uninstall-LTService{
         If ($WhatIfPreference -ne $True) {
             #Cleanup previous uninstallers
             Remove-Item 'Uninstall.exe','Uninstall.exe.config' -ErrorAction SilentlyContinue -Force -Confirm:$False
-            New-Item "$env:windir\temp\LabTech\Installer\temp\temp\" -type directory -ErrorAction SilentlyContinue | Out-Null
+            New-Item "$env:windir\temp\LabTech\Installer\temp\" -type directory -ErrorAction SilentlyContinue | Out-Null
         }#End If
 
         $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\temp\Agent_Install.msi"" /qn"
