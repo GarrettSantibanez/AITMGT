@@ -713,7 +713,14 @@ Function Uninstall-LTService{
                             If ($PSCmdlet.ShouldProcess("$installer", "DownloadFile")) {
                                 Write-Debug "Line $(LINENUM): Downloading Agent_Install.msi from $installer"
                                 $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.msi")
-                                If ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi")) 
+                                If ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi")) {
+                                    If (!((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -EA 0).length -gt 2500kb)) {
+                                        Write-Warning "WARNING: Line $(LINENUM): Agent_Install.msi size is below normal. Removing suspected corrupt file."
+                                        Remove-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
+                                        Continue
+                                    } Else {
+                                        $AlternateServer = $Svr
+                                    }#End If
                                 }#End If
                             }#End If
                         }#End If
@@ -743,7 +750,7 @@ Function Uninstall-LTService{
                             If ($PSCmdlet.ShouldProcess("$uninstaller", "DownloadFile")) {
                                 Write-Debug "Line $(LINENUM): Downloading Agent_Uninstall.exe from $uninstaller"
                                 $Script:LTServiceNetWebClient.DownloadFile($uninstaller,"$($env:windir)\temp\Agent_Uninstall.exe")
-                                If ((Test-Path "$($env:windir)\temp\Agent_Uninstall.exe") -and !((Get-Item "$($env:windir)\temp\Agent_Uninstall.exe" -EA 0).length/1KB -gt 80)) {
+                                If ((Test-Path "$($env:windir)\temp\Agent_Uninstall.exe") -and !((Get-Item "$($env:windir)\temp\Agent_Uninstall.exe" -EA 0).length -gt 80kb)) {
                                     Write-Warning "WARNING: Line $(LINENUM): Agent_Uninstall.exe size is below normal. Removing suspected corrupt file."
                                     Remove-Item "$($env:windir)\temp\Agent_Uninstall.exe" -ErrorAction SilentlyContinue -Force -Confirm:$False
                                     Continue
@@ -1189,7 +1196,27 @@ Function Install-LTService{
                 }#End If
             }#End If
 
-       $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
+            If ($WhatIfPreference -ne $True) {
+                $GoodTrayPort=$Null;
+                $TestTrayPort=$TrayPort;
+                For ($i=0; $i -le 10; $i++) {
+                    If (-not ($GoodTrayPort)) {
+                        If (-not (Test-LTPorts -TrayPort $TestTrayPort -Quiet)){
+                            $TestTrayPort++;
+                            If ($TestTrayPort -gt 42009) {$TestTrayPort=42000}
+                        } Else {
+                            $GoodTrayPort=$TestTrayPort
+                        }#End If
+                    }#End If
+                }#End For
+                If ($GoodTrayPort -and $GoodTrayPort -ne $TrayPort -and $GoodTrayPort -ge 1 -and $GoodTrayPort -le 65535) {
+                    Write-Verbose "TrayPort $($TrayPort) is in use. Changing TrayPort to $($GoodTrayPort)"
+                    $TrayPort=$GoodTrayPort
+                }#End If
+                Write-Output "Starting Install."
+            }#End If
+
+            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
 
             Try{
                 If ( $PSCmdlet.ShouldProcess("msiexec.exe $($iarg)", "Execute Install") ) {
