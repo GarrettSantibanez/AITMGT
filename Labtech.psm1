@@ -1189,27 +1189,7 @@ Function Install-LTService{
                 }#End If
             }#End If
 
-            If ($WhatIfPreference -ne $True) {
-                $GoodTrayPort=$Null;
-                $TestTrayPort=$TrayPort;
-                For ($i=0; $i -le 10; $i++) {
-                    If (-not ($GoodTrayPort)) {
-                        If (-not (Test-LTPorts -TrayPort $TestTrayPort -Quiet)){
-                            $TestTrayPort++;
-                            If ($TestTrayPort -gt 42009) {$TestTrayPort=42000}
-                        } Else {
-                            $GoodTrayPort=$TestTrayPort
-                        }#End If
-                    }#End If
-                }#End For
-                If ($GoodTrayPort -and $GoodTrayPort -ne $TrayPort -and $GoodTrayPort -ge 1 -and $GoodTrayPort -le 65535) {
-                    Write-Verbose "TrayPort $($TrayPort) is in use. Changing TrayPort to $($GoodTrayPort)"
-                    $TrayPort=$GoodTrayPort
-                }#End If
-                Write-Output "Starting Install."
-            }#End If
-
-            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
+       $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
 
             Try{
                 If ( $PSCmdlet.ShouldProcess("msiexec.exe $($iarg)", "Execute Install") ) {
