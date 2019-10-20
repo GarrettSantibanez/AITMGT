@@ -660,10 +660,10 @@ Function Uninstall-LTService{
         If ($WhatIfPreference -ne $True) {
             #Cleanup previous uninstallers
             Remove-Item 'Uninstall.exe','Uninstall.exe.config' -ErrorAction SilentlyContinue -Force -Confirm:$False
-            New-Item "$env:windir\temp\LabTech\Installer\temp\" -type directory -ErrorAction SilentlyContinue | Out-Null
+            New-Item "$env:windir\temp\LabTech\Installer" -type directory -ErrorAction SilentlyContinue | Out-Null
         }#End If
 
-        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\temp\Agent_Install.msi"" /qn"
+        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\Agent_Install.msi"" /qn"
     }#End Begin
 
     Process{
@@ -691,10 +691,10 @@ Function Uninstall-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Service/LabTechRemoteAgent.msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
                         } Else {
                             #Original Generic Installer URL - Yes, these both reference Location 1 and are thus the same. Will it change in Patch 14? This section is now ready.
-                            $installer = "$($Svr)/Labtech/Service/LabTechRemoteAgent.msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
@@ -712,11 +712,11 @@ Function Uninstall-LTService{
                         Else {
                             If ($PSCmdlet.ShouldProcess("$installer", "DownloadFile")) {
                                 Write-Debug "Line $(LINENUM): Downloading Agent_Install.msi from $installer"
-                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi")
-                                If ((Test-Path "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi")) {
-                                    If (!((Get-Item "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi" -EA 0).length/1KB -gt 1234)) {
+                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.msi")
+                                If ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi")) {
+                                    If (!((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -EA 0).length/1KB -gt 1234)) {
                                         Write-Warning "WARNING: Line $(LINENUM): Agent_Install.msi size is below normal. Removing suspected corrupt file."
-                                        Remove-Item "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
+                                        Remove-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
                                         Continue
                                     } Else {
                                         $AlternateServer = $Svr
@@ -759,7 +759,7 @@ Function Uninstall-LTService{
                         }#End If
                         If ($WhatIfPreference -eq $True) {
                             $GoodServer = $Svr
-                        } ElseIf ((Test-Path "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi") -and (Test-Path "$($env:windir)\temp\Agent_Uninstall.exe")) {
+                        } ElseIf ((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi") -and (Test-Path "$($env:windir)\temp\Agent_Uninstall.exe")) {
                             $GoodServer = $Svr
                             Write-Verbose "Successfully downloaded files from $($Svr)."
                         } Else {
@@ -809,14 +809,14 @@ Function Uninstall-LTService{
                 }#End If
 
                 If ($PSCmdlet.ShouldProcess("msiexec.exe $($xarg)", "Execute MSI Uninstall")) {
-                    If ((Test-Path "$($env:windir)\temp\LabTech\Installer\temp\Agent_Install.msi")) {
+                    If ((Test-Path "$($env:windir)\temp\LabTech\Installer\Agent_Install.msi")) {
                         #Run MSI uninstaller for current installation
                         Write-Verbose "Launching MSI Uninstall."
                         Write-Debug "Line $(LINENUM): Executing Command ""msiexec.exe $($xarg)"""
                         Start-Process -Wait -FilePath "$env:windir\system32\msiexec.exe" -ArgumentList $xarg -WorkingDirectory $env:TEMP
                         Start-Sleep -Seconds 5
                     } Else {
-                        Write-Verbose "WARNING: $($env:windir)\temp\LabTech\Installer\temp\Agent_Install.msi was not found."
+                        Write-Verbose "WARNING: $($env:windir)\temp\LabTech\Installer\Agent_Install.msi was not found."
                     }
                 }#End If
 
@@ -1127,7 +1127,7 @@ Function Install-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Service/LabTechRemoteAgent.msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
                         } Else {
                             #Original URL
                             $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=$LocationID"
@@ -1147,17 +1147,17 @@ Function Install-LTService{
                         } Else {
                             If ( $PSCmdlet.ShouldProcess($installer, "DownloadFile") ) {
                                 Write-Debug "Line $(LINENUM): Downloading Agent_Install.msi from $installer"
-                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi")
-                                If((Test-Path "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi") -and  !((Get-Item "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi" -EA 0).length/1KB -gt 1234)) {
+                                $Script:LTServiceNetWebClient.DownloadFile($installer,"$env:windir\temp\LabTech\Installer\Agent_Install.msi")
+                                If((Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi") -and  !((Get-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -EA 0).length/1KB -gt 1234)) {
                                     Write-Warning "WARNING: Line $(LINENUM): Agent_Install.msi size is below normal. Removing suspected corrupt file."
-                                    Remove-Item "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
+                                    Remove-Item "$env:windir\temp\LabTech\Installer\Agent_Install.msi" -ErrorAction SilentlyContinue -Force -Confirm:$False
                                     Continue
                                 }#End If
                             }#End If
 
                             If ($WhatIfPreference -eq $True) {
                                 $GoodServer = $Svr
-                            } ElseIf (Test-Path "$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi") {
+                            } ElseIf (Test-Path "$env:windir\temp\LabTech\Installer\Agent_Install.msi") {
                                 $GoodServer = $Svr
                                 Write-Verbose "Agent_Install.msi downloaded successfully from server $($Svr)."
                             } Else {
@@ -1216,7 +1216,7 @@ Function Install-LTService{
                 Write-Output "Starting Install."
             }#End If
 
-            $iarg = "/i ""$env:windir\temp\LabTech\Installer\temp\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
+            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qn /l ""$logpath\$logfile.log"""
 
             Try{
                 If ( $PSCmdlet.ShouldProcess("msiexec.exe $($iarg)", "Execute Install") ) {
