@@ -691,10 +691,10 @@ Function Uninstall-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
+                            $installer = "$($Svr)/Labtech/service/labtechremoteagent.msi"
                         } Else {
                             #Original Generic Installer URL - Yes, these both reference Location 1 and are thus the same. Will it change in Patch 14? This section is now ready.
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
+                            $installer = "$($Svr)/Labtech/service/labtechremoteagent.msi"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
@@ -1127,10 +1127,10 @@ Function Install-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=1"
+                            $installer = "$($Svr)/Labtech/service/labtechremoteagent.msi"
                         } Else {
                             #Original URL
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?Probe=1&installType=msi&MSILocations=$LocationID"
+                            $installer = "$($Svr)/Labtech/service/labtechremoteagent.msi"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
