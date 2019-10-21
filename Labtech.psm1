@@ -691,10 +691,10 @@ Function Uninstall-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?installtype=msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?InstallType=MSI"
                         } Else {
                             #Original Generic Installer URL - Yes, these both reference Location 1 and are thus the same. Will it change in Patch 14? This section is now ready.
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?installtype=msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?InstallType=MSI"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
@@ -1127,10 +1127,10 @@ Function Install-LTService{
                         }
                         If ([System.Version]$SVer -ge [System.Version]'110.374') {
                             #New Style Download Link starting with LT11 Patch 13 - Direct Location Targeting is no longer available
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?installtype=msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?InstallType=MSI"
                         } Else {
                             #Original URL
-                            $installer = "$($Svr)/Labtech/Deployment.aspx?installtype=msi"
+                            $installer = "$($Svr)/Labtech/Deployment.aspx?InstallType=MSI"
                         }
                         $installerTest = [System.Net.WebRequest]::Create($installer)
                         If (($Script:LTProxy.Enabled) -eq $True) {
