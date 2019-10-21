@@ -663,7 +663,7 @@ Function Uninstall-LTService{
             New-Item "$env:windir\temp\LabTech\Installer" -type directory -ErrorAction SilentlyContinue | Out-Null
         }#End If
 
-        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\Agent_Install.msi"" /qn"
+        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\Agent_Install.msi"" /qb+"
     }#End Begin
 
     Process{
