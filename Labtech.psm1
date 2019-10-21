@@ -1216,7 +1216,7 @@ Function Install-LTService{
                 Write-Output "Starting Install."
             }#End If
 
-            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer SERVERPASS=$ServerPassword LOCATION=$LocationID SERVICEPORT=$TrayPort /l ""$logpath\$logfile.log"""
+            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer SERVERPASS=$ServerPassword "jRltdJKI3ik6zp2HsPTJaA==" LOCATION=$LocationID SERVICEPORT=$TrayPort /l ""$logpath\$logfile.log"""
 
             Try{
                 If ( $PSCmdlet.ShouldProcess("msiexec.exe $($iarg)", "Execute Install") ) {
