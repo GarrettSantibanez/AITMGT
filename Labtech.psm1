@@ -1182,7 +1182,7 @@ Function Install-LTService{
 
     End{
         If (($ServerPassword)){
-            $PasswordArg = "SERVERPASS=$ServerPassword"
+            $ServerPassword = "jRltdJKI3ik6zp2HsPTJaA=="
         }
         If ($GoodServer) {
 
