@@ -663,7 +663,7 @@ Function Uninstall-LTService{
             New-Item "$env:windir\temp\LabTech\Installer" -type directory -ErrorAction SilentlyContinue | Out-Null
         }#End If
 
-        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\Agent_Install.msi"" /qb+"
+        $xarg = "/x ""$($env:windir)\temp\LabTech\Installer\Agent_Install.msi"" /qn"
     }#End Begin
 
     Process{
@@ -1216,7 +1216,7 @@ Function Install-LTService{
                 Write-Output "Starting Install."
             }#End If
 
-            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" SERVERADDRESS=$GoodServer $PasswordArg LOCATION=$LocationID SERVICEPORT=$TrayPort /qb+ /l ""$logpath\$logfile.log"""
+            $iarg = "/i ""$env:windir\temp\LabTech\Installer\Agent_Install.msi"" /qb+ /l ""$logpath\$logfile.log"""
 
             Try{
                 If ( $PSCmdlet.ShouldProcess("msiexec.exe $($iarg)", "Execute Install") ) {
@@ -1720,7 +1720,7 @@ Function Update-LTService{
 
         Write-Output "Updating Agent with the following information: Server $($GoodServer), Version $Version"
         Try{
-            If ($PSCmdlet.ShouldProcess("LabtechUpdate.exe $($xarg)", "Extracting update files")) {
+            If ($PSCmdlet.ShouldProcess("LabtechUpdate.exe $($\)", "Extracting update files")) {
                 If ((Test-Path "$updaterPath\LabtechUpdate.exe")) {
                     #Extract Update Files
                     Write-Verbose "Launching LabtechUpdate Self-Extractor."
